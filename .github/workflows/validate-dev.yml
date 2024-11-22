@@ -1,5 +1,5 @@
 name: GitHub Action Demo
-run-name: Rohit Kumar running this pipeline 🚀
+run-name: ${{github.actor}} running this pipeline 🚀
 ## pipeline will be running in 2 events
 ## pull, push request
 on: [push, pull_request]
