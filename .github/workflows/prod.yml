@@ -1,0 +1,16 @@
+name: GitHub Action Demo
+run-name: Rohit Kumar running this pipeline 🚀
+## pipeline will be running in 2 events
+## pull, push request
+on: [push, pull_request]
+jobs:
+    build-and-deploy: ## name of the job
+        runs-on: ubuntu-latest ## runner
+        steps:
+            - run: echo "Hello, world!" ## step 1
+              name: 'First Job'
+    clean-up: ## name of the job
+        runs-on: ubuntu-latest ## runner
+        steps:
+            - run: echo "Clean up the resources" ## step 1
+              name: 'Second Job'
