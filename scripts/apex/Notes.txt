@@ -1,0 +1,65 @@
+Class
+=======
+    -Varibales
+    -Methods
+    -Constructors
+
+By Default Access Modifier - Private
+--------------------------------------
+
+
+protected ---> variables and methods only not for class
+
+Constructor
+============
+-we can write the SOQL inside the Constructor
+-we can not allowed DML/ Not Recommened
+
+
+--> this keyword only works with instance method and variables
+
+Heap Memory ----> Varibales/Objects
+Stack Memory ---> Methods
+
+
+SOQL
+whenver include/contain  ---> use Like operator
+
+
+include/exclude keyword  ----> for multi-select picklist
+
+
+WhoId ---> Related to the person  ---> Contact and Lead
+WhatId ---> Any Objects except Lead and Contact
+
+
+SOQL Filters:
+-------------
+Single Value Filter
+
+=:
+> :
+< :
+>= :
+<= :
+
+
+Multiple Value Filters
+----------------------
+IN: <variables_name>
+
+SOQL for FOR Loop
+------------------
+for(Account acc: [Select Id, Name from Account];
+
+
+DML Operations
+==============
+create
+update
+delete
+upsert
+undelete
+merge
+
+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
