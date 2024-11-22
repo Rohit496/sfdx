@@ -1,4 +1,4 @@
-name: GitHub Action Demo
+name: Dev Pipeline
 run-name: ${{github.actor}} running this pipeline 🚀
 ## pipeline will be running in 2 events
 ## pull, push request
@@ -9,6 +9,13 @@ jobs:
         steps:
             - run: echo "Hello, world!" ## step 1
               name: 'First Job'
+            - name: Checkout Code
+              uses: actions/checkout@v4.2.2
+              with:
+                  fetch-depth: 0
+            - name: npm install
+              run: npm install
+
     clean-up: ## name of the job
         runs-on: ubuntu-latest ## runner
         steps:
