@@ -1,4 +1,4 @@
-name: Pre-validate Dev Sandbox
+name: Pre-Validate Dev Sandbox
 run-name: ${{ github.actor }} is running the Github Actions 🚀
 
 # Pipeline will be running mainly on two events: push and pull_request
