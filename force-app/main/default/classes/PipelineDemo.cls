@@ -3,5 +3,6 @@ public with sharing class PipelineDemo {
         System.debug('Hello PipelineDemo');
         System.debug('Hello PipelineDemo');
         System.debug('Hello PipelineDemo');
+        System.debug('Hello PipelineDemo');
     }
 }
