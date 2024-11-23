@@ -1,24 +1,14 @@
-name: Dev Pipeline
+name: Pre-validate Dev Sandbox
 run-name: ${{ github.actor }} is running the Github Actions 🚀
 
 # Pipeline will be running mainly on two events: push and pull_request
 on:
-    push:
-        paths:
-            - 'force-app/**'
-        branches:
-            - feature/*
-            - bugfix/*
-            - hotfix/*
     pull_request:
-        types: [opened, synchronize, reopened]
+        types: [opened, edited, closed]
         paths:
             - 'force-app/**'
         branches:
-            - main
-            - uat
             - develop
-
 jobs:
     build-and-deploy: # Name of the Job
         runs-on: ubuntu-latest # GitHub Hosted Runner [Self Hosted Runner]
