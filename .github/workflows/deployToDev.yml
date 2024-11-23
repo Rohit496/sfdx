@@ -1,21 +1,17 @@
-name: Deploy to Dev Sandbox
-run-name: ${{ github.actor }} is running the Deployment 🚀
+name: Deploy to Developer Sandbox
 
 on:
-    workflow_run:
-        workflows: ['Pre-Validate Dev Sandbox']
-        types:
-            - completed
+    push:
+        paths:
+            - 'force-app/**'
+        branches:
+            - develop
 
 jobs:
     deploy:
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         runs-on: ubuntu-latest
         environment: developer
         steps:
-            - name: 'Deployment Job Message'
-              run: echo "Starting Deployment to Dev Sandbox"
-
             - name: Checkout Code
               uses: actions/checkout@v4.1.7
               with:
@@ -27,11 +23,21 @@ jobs:
             - name: Install Salesforce CLI
               run: npm install @salesforce/cli --global
 
-            - name: Decrypt the server.key.enc file
-              run: openssl enc -nosalt -aes-256-cbc -d -in ${{ secrets.ENCRYPTED_KEY_FILE }} -out ${{ secrets.JWT_KEY_FILE }} -base64 -K ${{ secrets.KEY }} -iv ${{ secrets.IV }}
+            - name: Decrypt JWT Key File
+              run: |
+                  openssl enc -nosalt -aes-256-cbc -d \
+                  -in ${{ secrets.DEVELOPER_ENCRYPTED_KEY_FILE }} \
+                  -out ${{ secrets.DEVELOPER_JWT_KEY_FILE }} \
+                  -base64 -K ${{ secrets.DEVELOPER_KEY }} -iv ${{ secrets.DEVELOPER_IV }}
 
-            - name: Authorize with Salesforce org
-              run: sf org login jwt --username ${{ secrets.DEV_USERNAME }} --jwt-key-file ${{ secrets.JWT_KEY_FILE }} --client-id ${{ secrets.SF_CLIENT_ID }} --set-default --alias ci-org --instance-url ${{ secrets.SF_INSTANCE_URL }}
+            - name: Authorize Developer Org
+              run: |
+                  sf org login jwt \
+                  --username ${{ secrets.DEVELOPER_USERNAME }} \
+                  --jwt-key-file ${{ secrets.DEVELOPER_JWT_KEY_FILE }} \
+                  --client-id ${{ secrets.DEVELOPER_CLIENT_ID }} \
+                  --instance-url ${{ secrets.DEVELOPER_INSTANCE_URL }} \
+                  --alias dev-sandbox
 
-            - name: Deploy to Salesforce Org
-              run: sf project deploy start --source-dir force-app --target-org ci-org
+            - name: Deploy Code to Developer Sandbox
+              run: sf project deploy start --source-dir force-app --target-org dev
