@@ -1,4 +1,5 @@
-name: Validate on Developer Sandbox
+name: Code Validation
+run-name: ${{ github.actor }} is running the Github Actions 🚀
 
 on:
     push:
@@ -8,15 +9,15 @@ on:
             - feature/*
             - bugfix/*
             - hotfix/*
-    pull_request:
-        branches:
-            - develop
 
 jobs:
-    validate:
+    build-and-deploy:
         runs-on: ubuntu-latest
         environment: developer
         steps:
+            - name: 'Validation Job Message'
+              run: echo "Starting Code Validation Job"
+
             - name: Checkout Code
               uses: actions/checkout@v4.1.7
               with:
@@ -28,21 +29,11 @@ jobs:
             - name: Install Salesforce CLI
               run: npm install @salesforce/cli --global
 
-            - name: Decrypt JWT Key File
-              run: |
-                  openssl enc -nosalt -aes-256-cbc -d \
-                  -in ${{ secrets.DEVELOPER_ENCRYPTED_KEY_FILE }} \
-                  -out ${{ secrets.DEVELOPER_JWT_KEY_FILE }} \
-                  -base64 -K ${{ secrets.DEVELOPER_KEY }} -iv ${{ secrets.DEVELOPER_IV }}
+            - name: Decrypt the server.key.enc file
+              run: openssl enc -nosalt -aes-256-cbc -d -in ${{ secrets.ENCRYPTED_KEY_FILE }} -out ${{ secrets.JWT_KEY_FILE }} -base64 -K ${{ secrets.KEY }} -iv ${{ secrets.IV }}
 
-            - name: Authorize Developer Org
-              run: |
-                  sf org login jwt \
-                  --username ${{ secrets.DEVELOPER_USERNAME }} \
-                  --jwt-key-file ${{ secrets.DEVELOPER_JWT_KEY_FILE }} \
-                  --client-id ${{ secrets.DEVELOPER_CLIENT_ID }} \
-                  --instance-url ${{ secrets.DEVELOPER_INSTANCE_URL }} \
-                  --alias dev-sandbox
+            - name: Authorize with Salesforce org
+              run: sf org login jwt --username ${{ secrets.DEV_USERNAME }} --jwt-key-file ${{ secrets.JWT_KEY_FILE }} --client-id ${{ secrets.SF_CLIENT_ID }} --set-default --alias ci-org --instance-url ${{ secrets.SF_INSTANCE_URL }}
 
-            - name: Validate Deployment
-              run: sf project deploy validate --target-org dev
+            - name: Validate Code in Salesforce Org
+              run: sf project deploy validate --source-dir force-app --target-org ci-org
