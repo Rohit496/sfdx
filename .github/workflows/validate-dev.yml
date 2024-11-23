@@ -1,23 +1,37 @@
 name: Dev Pipeline
-run-name: ${{github.actor}} running this pipeline 🚀
-## pipeline will be running in 2 events
-## pull, push request
+run-name: ${{ github.actor }} is running the Github Actions 🚀
+
+# Pipeline will be running mainly on two events: push and pull_request
 on: [push, pull_request]
+
 jobs:
-    build-and-deploy: ## name of the job
-        runs-on: ubuntu-latest ## runner
+    build-and-deploy: # Name of the Job
+        runs-on: ubuntu-latest # GitHub Hosted Runner [Self Hosted Runner]
+
+        # Example: Develop an Apex trigger to count the total no of contacts under an account [job]
+        # Example#2: Deploy all the Apex Triggers and Classes developed as part of US-8834 [job]
         steps:
-            - run: echo "Hello, world!" ## step 1
-              name: 'First Job'
+            - name: 'First Job Message'
+              run: echo "This is my first Job"
+
             - name: Checkout Code
-              uses: actions/checkout@v4.2.2
+              uses: actions/checkout@v4.1.7
               with:
                   fetch-depth: 0
-            - name: npm install
+
+            - name: Install npm dependencies
               run: npm install
 
-    clean-up: ## name of the job
-        runs-on: ubuntu-latest ## runner
+            - name: Install Salesforce CLI
+              run: npm install @salesforce/cli --global
+
+            - name: Authorize with Salesforce org
+              run: sf org login jwt --username rohit.kumar@dev.com --jwt-key-file assets/server.key --client-id 3MVG9k02hQhyUgQBSPLjlJFZSve_y3ZDIYIkKFcxQtAB9v9K8kb4hB0lozUHx1NfyUKbAWvmzrdOJFfX9.lMZ --set-default --alias ci-org --instance-url https://login.salesforce.com
+            - name: User Information
+              run: sf org display user -o ci-org
+
+    clean-up:
+        runs-on: ubuntu-latest
         steps:
-            - run: echo "Clean up the resources" ## step 1
-              name: 'Second Job'
+            - name: 'Print Message'
+              run: echo "This is my second Job"
